@@ -52,6 +52,7 @@
         drawBall();
         movePaddle();
         drawPaddle();
+        brickCollision();
         drawBricks();
     }
 
@@ -153,7 +154,7 @@
             for(var c = 0; c< brickColumnCount; ++c)
             {
                 var brickX = brickOffsetLeft + (brickPadding + brickWidth) * (c - 1) + brickWidth/2;
-                bricks[r][c] = {x:brickX, y:brickY};
+                bricks[r][c] = {x:brickX, y:brickY, state:"normal"};
             }
         }
         drawBricks();
@@ -166,11 +167,63 @@
             //draw each brick
             for(var c = 0; c< brickColumnCount; ++c)
             {
-                ctx.beginPath();
-                ctx.rect(bricks[r][c].x - brickWidth/2, bricks[r][c].y - brickHeight/2, brickWidth, brickHeight);
-                ctx.fillStyle = "orange";
-                ctx.closePath();
-                ctx.fill();
+                if(bricks[r][c].state != "dead")
+                {
+                    ctx.beginPath();
+                    ctx.rect(bricks[r][c].x - brickWidth/2, bricks[r][c].y - brickHeight/2, brickWidth, brickHeight);
+                    ctx.fillStyle = "orange";
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+        }
+    }
+
+    function brickCollision()
+    {
+        //go through each brick
+        for(var r = 0; r< brickRowCount; ++r)
+        {
+            //check if collide with ball
+            for(var c = 0; c< brickColumnCount; ++c)
+            {
+                var brick = bricks[r][c];
+                //brick does not exist, do not test it
+                if(brick.state == "dead")
+                {
+                    continue;
+                }
+                //in Y range
+                if(yPos- radius <= brick.y + brickHeight/2 && yPos + radius >= brick.y - brickHeight/2) 
+                {
+                    //already in X range, collide with brick
+                    if(bricks[r][c].state == "Xrange")
+                    {
+                        bricks[r][c].state = "dead";
+                        yv = -yv;
+                        //can only break one brick at a time, if already break one, stop checking
+                        return;
+                    }else{
+                        bricks[r][c].state = "Yrange";
+                        //don't allow the ball to enter both range at a single frame
+                        continue;
+                    }
+                }else{
+                    bricks[r][c].state = "normal";
+                }
+                //in X range
+                if(xPos - radius <= brick.x + brickWidth/2 && xPos + radius >= brick.x - brickWidth/2)
+                {
+                    //already in Y range, collide with brick
+                    if(bricks[r][c].state == "Yrange")
+                    {
+                        bricks[r][c].state = "dead";
+                        xv = -xv;
+                    }else
+                        bricks[r][c].state = "Xrange";
+                }else{
+                    bricks[r][c].state = "normal";
+                }
             }
         }
     }
