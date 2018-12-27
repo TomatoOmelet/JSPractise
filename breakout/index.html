@@ -19,8 +19,8 @@
     //ball
     var xPos = canvas.width/2;
     var yPos = canvas.height/2 - 60;
-    var xv = 2;
-    var yv = 2;
+    var xv = 1;
+    var yv = 1;
     var radius = 10;
     //paddle
     var paddleWidth = 75;
@@ -32,6 +32,16 @@
     document.addEventListener("keydown", OnKeyDown);
     var leftPressed = false;
     var rightPressed = false;
+    //bricks
+    var brickRowCount = 3;
+    var brickColumnCount = 5;
+    var brickWidth = 75;
+    var brickHeight = 20;
+    var brickPadding = 10;
+    var brickOffsetTop = 30;
+    var brickOffsetLeft = 125;
+    var bricks = [];
+    initializeBricks();
 
     //draw function
     function draw() {
@@ -42,9 +52,12 @@
         drawBall();
         movePaddle();
         drawPaddle();
-
+        drawBricks();
     }
 
+    //===========================================================================
+    //Ball
+    //===========================================================================
     function drawBall()
     {
         ctx.beginPath();
@@ -80,7 +93,9 @@
             yv = -yv;
         }
     }
-
+    //===========================================================================
+    //Paddle
+    //===========================================================================
     function drawPaddle()
     {
         ctx.beginPath();
@@ -125,7 +140,40 @@
         if(paddleX + paddleWidth/2 > canvas.width)
             paddleX = canvas.width - paddleWidth/2;
     }
+    //===========================================================================
+    //Bricks
+    //===========================================================================
+    function initializeBricks()
+    {
+        for(var r = 0; r< brickRowCount; ++r)
+        {
+            bricks[r] = [];
+            var brickY = brickOffsetTop + (brickPadding + brickHeight) * (r - 1) + brickHeight/2;
+            //initialize bricks at each row
+            for(var c = 0; c< brickColumnCount; ++c)
+            {
+                var brickX = brickOffsetLeft + (brickPadding + brickWidth) * (c - 1) + brickWidth/2;
+                bricks[r][c] = {x:brickX, y:brickY};
+            }
+        }
+        drawBricks();
+    }
 
+    function drawBricks()
+    {
+        for(var r = 0; r< brickRowCount; ++r)
+        {
+            //draw each brick
+            for(var c = 0; c< brickColumnCount; ++c)
+            {
+                ctx.beginPath();
+                ctx.rect(bricks[r][c].x - brickWidth/2, bricks[r][c].y - brickHeight/2, brickWidth, brickHeight);
+                ctx.fillStyle = "orange";
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+    }
 
     var interval = setInterval(draw, 10);
 </script>
