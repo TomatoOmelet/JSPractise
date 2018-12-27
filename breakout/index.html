@@ -45,6 +45,7 @@
     initializeBricks();
     //game progress
     var score = 0;
+    var life = 3;
 
     //draw function
     function draw() {
@@ -58,6 +59,7 @@
         brickCollision();
         drawBricks();
         drawScore();
+        drawLive();
         checkWinning();
     }
 
@@ -88,9 +90,16 @@
         //touch bottom => game over
         if(yPos + radius >= canvas.height && yv>0)
         {   
-            clearInterval(interval);
-            window.alert("Game Over");
-            document.location.reload();
+            if(life > 0)
+            {
+                life --;
+                yv = -yv;
+                yPos = canvas.height - radius - 2;
+            }else{
+                clearInterval(interval);
+                window.alert("Game Over");
+                document.location.reload();
+            }
         }
         //touch paddle
         if(yv > 0 && (yPos + radius <= paddleY + paddleHeight/2 && yPos + radius >= paddleY - paddleHeight/2) && 
@@ -253,6 +262,13 @@
         ctx.font = "16px Arial";
         ctx.fillStyle = "black";
         ctx.fillText("Score: " + score, 10, 200);
+    }
+
+    function drawLive()
+    {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "red";
+        ctx.fillText("Live: " + life, 10, 230);
     }
 
     function checkWinning()
