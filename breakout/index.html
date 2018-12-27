@@ -16,14 +16,22 @@
     'use strict';
 	var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
-    //pos
+    //ball
     var xPos = canvas.width/2;
     var yPos = canvas.height/2;
-    //velocity
-    var xv = 1;
-    var yv = 1;
-
+    var xv = 2;
+    var yv = 2;
     var radius = 10;
+    //paddle
+    var paddleWidth = 75;
+    var paddleHeight = 15;
+    var paddleX = canvas.width/2;
+    var paddleY = canvas.height - 30;
+    var paddleVelocity = 5;
+    document.addEventListener("keyup", OnKeyUp);
+    document.addEventListener("keydown", OnKeyDown);
+    var leftPressed = false;
+    var rightPressed = false;
 
     //draw function
     function draw() {
@@ -32,6 +40,8 @@
         xPos += xv;
         yPos += yv;
         drawBall();
+        movePaddle();
+        drawPaddle();
 
     }
 
@@ -40,8 +50,8 @@
         ctx.beginPath();
         ctx.arc(xPos, yPos, radius, 0, Math.PI*2);
         ctx.fillStyle = "#0095DD";
-        ctx.fill();
         ctx.closePath();
+        ctx.fill();
     }
 
     function ballBounce()
@@ -57,6 +67,52 @@
             xv = -xv;
         }
     }
+
+    function drawPaddle()
+    {
+        ctx.beginPath();
+        ctx.rect(paddleX - paddleWidth/2, paddleY - paddleHeight/2, paddleWidth, paddleHeight);
+        ctx.fillStyle = "green";
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function OnKeyUp(e)
+    {
+        //check if the correct keys are pressed down
+        if(e.key == "Left" || e.key == "ArrowLeft")
+        {
+            leftPressed = false;
+        }else if(e.key == "Right" || e.key == "ArrowRight"){
+            rightPressed = false;
+        }
+    }
+
+    function OnKeyDown(e)
+    {
+        //check if the correct keys are pressed down
+        if(e.key == "Left" || e.key == "ArrowLeft")
+        {
+            leftPressed = true;
+        }else if(e.key == "Right" || e.key == "ArrowRight"){
+            rightPressed = true;
+        }
+    }
+
+    function movePaddle()
+    {
+        //move paddle
+        if(leftPressed)
+            paddleX -= paddleVelocity;
+        else if(rightPressed)
+            paddleX += paddleVelocity;
+        //check bound
+        if(paddleX - paddleWidth/2 < 0)
+            paddleX = paddleWidth/2;
+        if(paddleX + paddleWidth/2 > canvas.width)
+            paddleX = canvas.width - paddleWidth/2;
+    }
+
 
     setInterval(draw, 10);
 </script>
