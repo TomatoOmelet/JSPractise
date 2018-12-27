@@ -18,7 +18,7 @@
     var ctx = canvas.getContext("2d");
     //ball
     var xPos = canvas.width/2;
-    var yPos = canvas.height/2;
+    var yPos = canvas.height/2 - 60;
     var xv = 2;
     var yv = 2;
     var radius = 10;
@@ -57,7 +57,7 @@
     function ballBounce()
     {
         //y axis
-        if((yPos - radius <= 0 && yv<0) || (yPos + radius >= canvas.height && yv>0))
+        if(yPos - radius <= 0 && yv<0)
         {
             yv = -yv;
         }
@@ -65,6 +65,19 @@
         if((xPos - radius <= 0 && xv<0) || (xPos + radius >= canvas.width && xv>0))
         {
             xv = -xv;
+        }
+        //touch bottom => game over
+        if(yPos + radius >= canvas.height && yv>0)
+        {   
+            clearInterval(interval);
+            window.alert("Game Over");
+            document.location.reload();
+        }
+        //touch paddle
+        if(yv > 0 && (yPos + radius <= paddleY + paddleHeight/2 && yPos + radius >= paddleY - paddleHeight/2) && 
+            (xPos <= paddleX + paddleWidth/2 && xPos >= paddleX - paddleWidth/2))
+        {
+            yv = -yv;
         }
     }
 
@@ -114,7 +127,7 @@
     }
 
 
-    setInterval(draw, 10);
+    var interval = setInterval(draw, 10);
 </script>
 
 </body>
