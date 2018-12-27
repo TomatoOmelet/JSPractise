@@ -13,6 +13,7 @@
 <canvas id="myCanvas" width="480" height="320"></canvas>
 
 <script>
+    'use strict';
 	var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     //pos
@@ -22,21 +23,39 @@
     var xv = 1;
     var yv = 1;
 
+    var radius = 10;
+
     //draw function
     function draw() {
         ctx.clearRect(0,0,canvas.width, canvas.height);
-        drawBall();
+        ballBounce();
         xPos += xv;
         yPos += yv;
+        drawBall();
+
     }
 
     function drawBall()
     {
         ctx.beginPath();
-        ctx.arc(xPos, yPos, 10, 0, Math.PI*2);
+        ctx.arc(xPos, yPos, radius, 0, Math.PI*2);
         ctx.fillStyle = "#0095DD";
         ctx.fill();
         ctx.closePath();
+    }
+
+    function ballBounce()
+    {
+        //y axis
+        if((yPos - radius <= 0 && yv<0) || (yPos + radius >= canvas.height && yv>0))
+        {
+            yv = -yv;
+        }
+        //x axis
+        if((xPos - radius <= 0 && xv<0) || (xPos + radius >= canvas.width && xv>0))
+        {
+            xv = -xv;
+        }
     }
 
     setInterval(draw, 10);
