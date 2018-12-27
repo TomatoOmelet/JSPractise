@@ -42,6 +42,8 @@
     var brickOffsetLeft = 125;
     var bricks = [];
     initializeBricks();
+    //game progress
+    var score = 0;
 
     //draw function
     function draw() {
@@ -54,6 +56,8 @@
         drawPaddle();
         brickCollision();
         drawBricks();
+        drawScore();
+        checkWinning();
     }
 
     //===========================================================================
@@ -201,6 +205,8 @@
                     {
                         bricks[r][c].state = "dead";
                         yv = -yv;
+                        //update score
+                        score ++;               
                         //can only break one brick at a time, if already break one, stop checking
                         return;
                     }else{
@@ -225,6 +231,25 @@
                     bricks[r][c].state = "normal";
                 }
             }
+        }
+    }
+    //===========================================================================
+    //Game Progress
+    //===========================================================================
+    function drawScore()
+    {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "black";
+        ctx.fillText("Score: " + score, 10, 200);
+    }
+
+    function checkWinning()
+    {
+        if(score >= brickRowCount * brickColumnCount)
+        {
+            clearInterval(interval);
+            window.alert("You win");
+            document.location.reload();
         }
     }
 
