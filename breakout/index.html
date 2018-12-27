@@ -30,6 +30,7 @@
     var paddleVelocity = 5;
     document.addEventListener("keyup", OnKeyUp);
     document.addEventListener("keydown", OnKeyDown);
+    document.addEventListener("mousemove", OnMouseMove);
     var leftPressed = false;
     var rightPressed = false;
     //bricks
@@ -130,6 +131,17 @@
         }else if(e.key == "Right" || e.key == "ArrowRight"){
             rightPressed = true;
         }
+    }
+
+    function OnMouseMove(e)
+    {
+        var mouseX = e.clientX - canvas.offsetLeft;
+        paddleX = mouseX;
+        //check bound
+        if(paddleX - paddleWidth/2 < 0)
+            paddleX = paddleWidth/2;
+        if(paddleX + paddleWidth/2 > canvas.width)
+            paddleX = canvas.width - paddleWidth/2;
     }
 
     function movePaddle()
